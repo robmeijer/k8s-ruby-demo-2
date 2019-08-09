@@ -14,7 +14,7 @@ blocks:
         commands:
           - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
           - checkout
-          - docker pull semaphoredemos/semaphore-demo-ruby-kubernetes:latest || true
-          - docker build --cache-from semaphoredemos/semaphore-demo-ruby-kubernetes:latest -t semaphoredemos/semaphore-demo-ruby-kubernetes:$SEMAPHORE_WORKFLOW_ID .
+          - docker pull robmeijer/k8s-ruby-demo-2:latest || true
+          - docker build --cache-from robmeijer/k8s-ruby-demo-2:latest -t robmeijer/k8s-ruby-demo-2:$SEMAPHORE_WORKFLOW_ID .
           - docker images
-          - docker push semaphoredemos/semaphore-demo-ruby-kubernetes:$SEMAPHORE_WORKFLOW_ID
+          - docker push robmeijer/k8s-ruby-demo-2:$SEMAPHORE_WORKFLOW_ID
