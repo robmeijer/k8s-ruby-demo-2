@@ -25,7 +25,7 @@ blocks:
   - name: Tag latest release
     task:
       secrets:
-        - name: dockerhub-users
+        - name: my-dockerhub
       jobs:
       - name: docker tag latest
         commands:
