@@ -1,0 +1,30 @@
+# deployment.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-ruby-demo-2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-ruby-demo-2
+  template:
+    metadata:
+      labels:
+        app: k8s-ruby-demo-2
+    spec:
+      containers:
+        - name: k8s-ruby-demo-2
+          image: robmeijer/k8s-ruby-demo-2:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: semaphore-demo-lb
+spec:
+  selector:
+    app: semaphore-demo-ruby-kubernetes
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 4567
