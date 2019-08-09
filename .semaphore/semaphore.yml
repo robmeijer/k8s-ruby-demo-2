@@ -1,30 +1,28 @@
-# For more Ruby information and examples, see
-# https://docs.semaphoreci.com/article/73-ruby
+# .semaphore/semaphore.yml
 version: v1.0
-name: Hello Kubernetes
+name: CI
 agent:
   machine:
     type: e1-standard-2
     os_image: ubuntu1804
+
 blocks:
-  - name: Ruby example
+  - name: Install dependencies
     task:
       jobs:
-        - name: Run some code
-          commands:
-            - ruby -e 'puts "evol".reverse'
-            # Uncomment the following line to pull your code,
-            # then proceed by adding your custom commands:
-            #- checkout
-  - name: Talk to k8s
-    task:
-      secrets:
-        - name: do-k8s-2
-      env_vars:
-        - name: KUBECONFIG
-          value: /home/semaphore/.kube/dok8s-2.yaml
-      jobs:
-        - name: Get node(s)
+        - name: bundle install
           commands:
             - checkout
-            - kubectl get nodes
+            - cache restore gems-$SEMAPHORE_GIT_BRANCH-$(checksum Gemfile.lock),gems-$SEMAPHORE_GIT_BRANCH,gems-master
+            - bundle install --deployment --path .bundle
+            - cache store gems-$SEMAPHORE_GIT_BRANCH-$(checksum Gemfile.lock) .bundle
+
+  - name: Tests
+    task:
+      jobs:
+        - name: rspec
+          commands:
+            - checkout
+            - cache restore gems-$SEMAPHORE_GIT_BRANCH-$(checksum Gemfile.lock),gems-$SEMAPHORE_GIT_BRANCH,gems-master
+            - bundle install --deployment --path .bundle
+            - bundle exec rspec
