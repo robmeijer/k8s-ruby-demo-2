@@ -1,7 +1,7 @@
 # For more Ruby information and examples, see
 # https://docs.semaphoreci.com/article/73-ruby
 version: v1.0
-name: Hello Semaphore
+name: Hello Kubernetes
 agent:
   machine:
     type: e1-standard-2
@@ -16,3 +16,15 @@ blocks:
             # Uncomment the following line to pull your code,
             # then proceed by adding your custom commands:
             #- checkout
+  - name: Talk to k8s
+    task:
+      secrets:
+        - name: do-k8s-2
+      env_vars:
+        - name: KUBECONFIG
+          value: /home/semaphore/.kube/dok8s-2.yaml
+      jobs:
+        - name: Get node(s)
+          commands:
+            - checkout
+            - kubectl get nodes
